@@ -1,3 +1,3 @@
-const favorites = new Map<number, { title: string, image: string }>();
+const favorites = new Map<string, { title: string, image: string }>();
 
 export default favorites;
