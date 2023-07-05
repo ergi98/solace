@@ -1,7 +1,8 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
-    import AnimeComponent from "../AnimeComponent.svelte";
     import type { PageData } from "./$types";
+    import AnimeComponent from "../AnimeComponent.svelte";
+    import UnfavoriteButton from "../UnfavoriteButton.svelte";
 
     export let data: PageData;
 </script>
@@ -25,15 +26,7 @@
         Go back to list
     </a>
     {#if data.favorites.has(data.anime.mal_id.toString())}
-        <form action="?/removeFromFavorites" method="post" use:enhance>
-            <input type="hidden" name="mal_id" value={data.anime.mal_id} />
-            <button
-                class="bg-red-500 hover:bg-red-600 text-white uppercase text-sm rounded p-4"
-                type="submit"
-            >
-                Remove from favorites
-            </button>
-        </form>
+        <UnfavoriteButton mal_id={data.anime.mal_id.toString()} />
     {:else}
         <form action="?/addToFavorites" method="post" use:enhance>
             <input type="hidden" name="mal_id" value={data.anime.mal_id} />

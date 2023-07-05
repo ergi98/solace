@@ -2,6 +2,7 @@
     import "../app.css";
     import type { LayoutData } from "./$types";
     import AnimeComponent from "./AnimeComponent.svelte";
+    import UnfavoriteButton from "./UnfavoriteButton.svelte";
     export let data: LayoutData;
 </script>
 
@@ -28,6 +29,9 @@
                             title={value.title}
                             image={value.image}
                         />
+                        {#if data.favorites.has(key)}
+                            <UnfavoriteButton mal_id={key} />
+                        {/if}
                     </div>
                 {/each}
             </div>

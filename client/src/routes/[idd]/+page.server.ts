@@ -54,16 +54,4 @@ export const actions = {
             throw error(400, { message: "Invalid form data" });
         }
     },
-    removeFromFavorites: async ({ request }) => {
-        const form = Object.fromEntries(await request.formData());
-
-        const parsed = unfavoriteData.safeParse(form);
-
-        if (parsed.success) {
-            favorites.delete(parsed.data.mal_id);
-            return { success: true };
-        } else {
-            throw error(400, { message: "Invalid form data" });
-        }
-    },
 } satisfies Actions;

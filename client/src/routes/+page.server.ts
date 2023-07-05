@@ -1,5 +1,14 @@
+import favorites from "$lib/data/favorites";
 import { apiRequest } from "../lib/api.util";
 import type { Actions, PageServerLoad } from "./$types";
+
+import { error } from "@sveltejs/kit";
+
+import { z } from "zod";
+
+const unfavoriteData = z.object({
+    mal_id: z.string(),
+});
 
 type RecommendedAnime = {
     data: {
@@ -29,10 +38,16 @@ export const load = (async () => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-    formAction: async ({ request }) => {
-        const form = await request.formData();
-        const id = form.get("id");
+    removeFromFavorites: async ({ request }) => {
+        const form = Object.fromEntries(await request.formData());
 
-        return { id };
+        const parsed = unfavoriteData.safeParse(form);
+
+        if (parsed.success) {
+            favorites.delete(parsed.data.mal_id);
+            return { success: true };
+        } else {
+            throw error(400, { message: "Invalid form data" });
+        }
     },
 } satisfies Actions;
