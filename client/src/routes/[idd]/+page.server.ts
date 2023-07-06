@@ -1,14 +1,6 @@
-import { error } from "@sveltejs/kit";
-import { animeRequest } from "$lib/api.util";
+import { apiRequest } from "$lib/api.util";
+import favorites from "$lib/data/favorites";
 import type { Actions, PageServerLoad } from "./$types";
-
-import { z } from "zod";
-
-const favoritesData = z.object({
-    mal_id: z.string(),
-    title: z.string(),
-    image: z.string(),
-});
 
 export type Anime = {
     data: {
@@ -21,35 +13,28 @@ export type Anime = {
                 small_image_url: string;
                 large_image_url: string;
             };
-        };
-    };
+        }
+    }
 };
 
 export const load = (async ({ params }) => {
     const id = params.idd;
-    const anime = await animeRequest<Anime>(`anime/${id}`);
+    const anime = await apiRequest<Anime>(`anime/${id}`);
     return {
         anime: anime.data,
     };
 }) satisfies PageServerLoad;
 
 export const actions = {
-    addToFavorites: async ({ locals, request }) => {
-        const form = Object.fromEntries(await request.formData());
+    addToFavorites: async ({ request }) => {
+        const form = await request.formData();
 
-        const parsed = favoritesData.safeParse(form);
+        const mal_id = form.get("mal_id") as unknown as number;
+        const title = form.get("title") as unknown as string;
+        const image = form.get("image") as unknown as string;
 
-        if (parsed.success) {
-            try {
-                await locals.pb.collection("favorites").create({
-                    ...parsed.data,
-                });
-                return { success: true };
-            } catch (err) {
-                throw new Error("Failed to favorite");
-            }
-        } else {
-            throw error(400, { message: "Invalid form data" });
-        }
+        favorites.set(mal_id, { title: title, image: image });
+
+        return { success: true };
     },
 } satisfies Actions;

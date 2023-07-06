@@ -8,12 +8,8 @@ services:
     volumes:
       - ./client/src:/app/src
       - ./client/.svelte-kit:/app/.svelte-kit
-    networks:
-      - docker_network
     ports:
-      - 3000:3000 
-    links:
-      - server
+      - 3000:3000
     depends_on:
       - server
   server:
@@ -24,10 +20,5 @@ services:
     volumes:
       - ./pocketbase/pb_data:/pb/pb_data
       - ./pocketbase/pb_migrations:/pb/pb_migrations
-    networks:
-      - docker_network
     ports:
       - 8080:8080
-networks:
-  docker_network:
-    driver: bridge
