@@ -4,6 +4,8 @@
     import AnimeComponent from "./AnimeComponent.svelte";
     import UnfavoriteButton from "./UnfavoriteButton.svelte";
     export let data: LayoutData;
+
+    import { slide } from "svelte/transition";
 </script>
 
 <div class="mx-auto flex md:flex-row flex-col-reverse justify-center max-w-5xl">
@@ -14,12 +16,16 @@
         <h1 class="text-lg font-bold pb-4 w-fit">Favorites</h1>
         {#if data.favorites.size === 0}
             <div
+                in:slide={{ delay: 320, duration: 300 }}
+                out:slide={{ duration: 300 }}
                 class="text-sm bg-neutral-100 px-2 py-4 rounded-md border-dashed border border-neutral-300 text-neutral-500 text-center"
             >
-                You have not yet favorited any animes
+                No favorite anime
             </div>
         {:else}
             <div
+                in:slide={{ delay: 320, duration: 300 }}
+                out:slide={{ duration: 300 }}
                 class="px-4 flex flex-row gap-4 max-w-md overflow-auto overscroll-contain pb-2"
             >
                 {#each [...data.favorites] as [key, value]}
