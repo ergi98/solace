@@ -5,7 +5,7 @@ import type { LayoutServerLoad } from "./$types";
 export const load = (async ({ locals }) => {
     try {
         const favorites = structuredClone(
-            await locals.pb.collection("favorites").getFullList(),
+            await locals.pb.collection("favorites").getFullList({ sort: "-created" }),
         ) as Record[];
 
         const favMap = new Map();

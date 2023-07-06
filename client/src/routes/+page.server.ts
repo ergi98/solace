@@ -34,7 +34,7 @@ export const load = (async ({ locals }) => {
             "recommendations/anime",
         );
         const favorites = structuredClone(
-            await locals.pb.collection("favorites").getFullList(),
+            await locals.pb.collection("favorites").getFullList({ sort: "-created" }),
         ) as Record[];
 
         const favMap = new Map();
