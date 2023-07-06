@@ -29,31 +29,35 @@ type RecommendedAnime = {
 };
 
 export const load = (async ({ locals }) => {
+    const recommended = await animeRequest<RecommendedAnime>(
+        "recommendations/anime",
+    );
+    let favorites = [];
+
     try {
-        const recommended = await animeRequest<RecommendedAnime>(
-            "recommendations/anime",
-        );
-        const favorites = structuredClone(
-            await locals.pb.collection("favorites").getFullList({ sort: "-created" }),
+        favorites = structuredClone(
+            await locals.pb
+                .collection("favorites")
+                .getFullList({ sort: "-created" }),
         ) as Record[];
-
-        const favMap = new Map();
-
-        favorites.forEach((fav) => {
-            favMap.set(fav.mal_id, {
-                id: fav.id,
-                title: fav.title,
-                image: fav.image,
-            });
-        });
-
-        return {
-            favorites: favMap,
-            recommended: recommended,
-        };
     } catch (err) {
         throw new Error(`Failed to fetch favorites`);
     }
+
+    const favMap = new Map();
+
+    favorites.forEach((fav) => {
+        favMap.set(fav.mal_id, {
+            id: fav.id,
+            title: fav.title,
+            image: fav.image,
+        });
+    });
+
+    return {
+        favorites: favMap,
+        recommended: recommended,
+    };
 }) satisfies PageServerLoad;
 
 export const actions = {
@@ -64,12 +68,11 @@ export const actions = {
 
         if (parsed.success) {
             try {
-                // favorites.delete(parsed.data.mal_id);
                 await locals.pb.collection("favorites").delete(parsed.data.id);
+                return { success: true };
             } catch (err) {
                 throw new Error(`Failed to remove from favorites`);
             }
-            return { success: true };
         } else {
             throw error(400, { message: "Invalid form data" });
         }
