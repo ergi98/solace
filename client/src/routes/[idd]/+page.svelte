@@ -26,7 +26,9 @@
         Go back to list
     </a>
     {#if data.favorites.has(data.anime.mal_id.toString())}
-        <UnfavoriteButton id={data.favorites.get(data.anime.mal_id.toString()).id} />
+        <UnfavoriteButton
+            id={data.favorites.get(data.anime.mal_id.toString())?.id ?? ""}
+        />
     {:else}
         <form action="?/addToFavorites" method="post" use:enhance>
             <input type="hidden" name="mal_id" value={data.anime.mal_id} />

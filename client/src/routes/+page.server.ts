@@ -1,5 +1,4 @@
-import type { Record } from "pocketbase";
-import { animeRequest } from "../lib/api.util";
+import { animeRequest, favoriteRequest } from "../lib/api.util";
 import type { Actions, PageServerLoad } from "./$types";
 
 import { error } from "@sveltejs/kit";
@@ -32,30 +31,9 @@ export const load = (async ({ locals }) => {
     const recommended = await animeRequest<RecommendedAnime>(
         "recommendations/anime",
     );
-    let favorites = [];
-
-    try {
-        favorites = structuredClone(
-            await locals.pb
-                .collection("favorites")
-                .getFullList({ sort: "-created" }),
-        ) as Record[];
-    } catch (err) {
-        throw new Error(`Failed to fetch favorites`);
-    }
-
-    const favMap = new Map();
-
-    favorites.forEach((fav) => {
-        favMap.set(fav.mal_id, {
-            id: fav.id,
-            title: fav.title,
-            image: fav.image,
-        });
-    });
-
+    const favorites = await favoriteRequest(locals.pb);
     return {
-        favorites: favMap,
+        favorites: favorites,
         recommended: recommended,
     };
 }) satisfies PageServerLoad;
