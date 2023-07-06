@@ -30,7 +30,7 @@
                             image={value.image}
                         />
                         {#if data.favorites.has(key)}
-                            <UnfavoriteButton mal_id={key} />
+                            <UnfavoriteButton id={value.id} />
                         {/if}
                     </div>
                 {/each}
