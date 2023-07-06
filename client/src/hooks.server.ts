@@ -8,7 +8,11 @@ type Input = {
 };
 
 export async function handle(input: Input): Promise<Response> {
-    input.event.locals.pb = new PocketBase("http://task-server:8080");
+    input.event.locals.pb = new PocketBase(
+        process.env.NODE_ENV === "production"
+            ? "http://localhost:8080"
+            : "http://task-server:8080",
+    );
 
     const response = await input.resolve(input.event);
 

@@ -6,6 +6,7 @@
 
 <a
     href="/{mal_id}"
+    data-testid="animeLink"
     class="block group relative rounded-md overflow-hidden border border-neutral-100 hover:border-neutral-200 hover:cursor-pointer transition-all h-fit w-fit"
 >
     <img alt={title} src={image} class=" object-cover w-52 aspect-photo" />
